@@ -39,7 +39,7 @@ async def login(u: LoginUserRequest) -> LoginUserResponse:
 async def register(user: RegisterUserRequest) -> dict:
     try: 
         hashed_password = pwd_context.hash(user.password)
-        created_user = User(username=user.username, password=hashed_password).save()
+        created_user = User(username=user.username, password=hashed_password, role=user.role).save()
         if created_user:
             return {"detail": "User registration successful, Please login!!"}
     

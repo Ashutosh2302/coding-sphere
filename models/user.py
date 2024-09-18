@@ -29,6 +29,7 @@ class IUser(BaseModel):
 class RegisterUserRequest(BaseModel):
     username: str
     password: str
+    role: Role | None = Role.USER
 
 
 class LoginUserRequest(BaseModel):
