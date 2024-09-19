@@ -9,7 +9,6 @@ from database.db import init_db, close_db
 
 app = FastAPI()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 @asynccontextmanager
 async def lifespan():

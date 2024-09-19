@@ -28,10 +28,8 @@ def verify_token(token: str = Depends(oauth2_scheme)):
         username: str = payload.get("username")
         role: str = payload.get("role")
         if id is None or username is None or role is None:
-            print("chhhhcutie")
             raise credentials_exception
     except InvalidTokenError as e:
-        print("chhhh", e)
         raise credentials_exception
 
     return TokenData(id=id, username=username, role=role)
