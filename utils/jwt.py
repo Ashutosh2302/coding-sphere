@@ -21,14 +21,23 @@ credentials_exception = HTTPException(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+
+role_exception = HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Insufficient permissions",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
 def verify_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=["HS256"])
         id: str = payload.get("id")
         username: str = payload.get("username")
         role: str = payload.get("role")
-        if id is None or username is None or role is None:
+        if None in [id, username, role]:
             raise credentials_exception
+        if Role(role) not in [Role.ADMIN, Role.USER]:
+            raise role_exception
     except InvalidTokenError as e:
         raise credentials_exception
 
@@ -37,7 +46,4 @@ def verify_token(token: str = Depends(oauth2_scheme)):
 
 def admin_required(user: TokenData = Depends(verify_token)):
     if user.role != Role.ADMIN:
-            raise HTTPException(
-                status_code=403,
-                detail="Insufficient permissions",
-            )
+            raise role_exception
